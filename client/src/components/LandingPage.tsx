@@ -25,13 +25,13 @@ const LandingPage = () => {
     <div className="absolute w-[90%] h-full max-w-[380px] min-h-[450px] box-border p-4">
       <img src={logo} />
       <img src={gif} />
-      <p className="text-[#0c92d1] font-bold text-md">
-        Stop arguing over what to watch! Let us help you and your friend(s) pick
-        the movie for tonight
+      <p className="text-[#0c92d1] font-bold text-md py-5">
+        Stop arguing over what to watch! Let us help you and your friend(s) on
+        movie night
       </p>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col items-center space-y-4 max-w-md mx-auto px-4 py-5"
+        className="flex flex-col items-center space-y-4 max-w-md mx-auto px-4 py-4"
       >
         <input
           type="text"
@@ -39,12 +39,12 @@ const LandingPage = () => {
           value={userName}
           maxLength={20}
           onChange={(e) => setUserName(e.target.value)}
-          className="h-10 inline-block border-[#0c92d1] border-2 rounded-md text-center bg-white placeholder:text-gray-600 placeholder:opacity-60 text-[#0c92d1] shadow-2xl"
+          className="h-10 inline-block border-[#0c92d1] border-2 rounded-md text-center bg-white placeholder:text-gray-600 placeholder:opacity-80 text-[#0c92d1] shadow-2xl"
         />
         <button
           type="submit"
           disabled={disableButton}
-          className="flex items-center rounded-md disabled:opacity-40 border-2 disabled:border-[#ead02e] h-[34px] w-auto active:cursor-default text-[18px] disabled:hover:border-[#ead02e] "
+          className="flex items-center text-white disabled:text-[rgba(0,0,0,1)] bg-[#dd5a87] border-[#ae487c] rounded-md disabled:opacity-50 border-2 disabled:border-[#ead02e] h-[34px] w-auto cursor-pointer text-[18px] disabled:cursor-not-allowed p-4 font-bold"
         >
           Join
         </button>
