@@ -3,12 +3,17 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";
 import { GlobalStyles, StyledEngineProvider } from "@mui/material";
+import { BrowserRouter, Routes, Route } from "react-router";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <StyledEngineProvider enableCssLayer>
       <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-      <App />
+      <BrowserRouter>
+        <Routes>
+          <Route index path="/" element={<App />} />
+        </Routes>
+      </BrowserRouter>
     </StyledEngineProvider>
   </StrictMode>
 );

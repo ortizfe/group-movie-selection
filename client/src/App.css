@@ -11,10 +11,10 @@ body {
   background-color: #f8ea4f;
 }
 
-.logo {
+/* .logo {
   height: 9em;
   padding: 1.5em;
-  /* will-change: filter; */
+  will-change: filter;
   transition: filter 300ms;
   overflow-clip-margin: content-box;
   overflow: clip;
@@ -23,11 +23,12 @@ body {
 .gif {
   height: 14em;
   padding: 1.5em;
-  /* will-change: filter; */
+  will-change: filter;
   transition: filter 300ms;
   overflow-clip-margin: content-box;
   overflow: clip;
-}
+} */
+
 /* .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
