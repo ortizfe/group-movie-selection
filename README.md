@@ -2,7 +2,7 @@
 
 ## Cloning the repo:
 
-1. `git clone https://github.com/ortizfe/group-movie-selection.git`
+1. ```git clone https://github.com/ortizfe/group-movie-selection.git```
 
 ## Running the Frontend:
 
