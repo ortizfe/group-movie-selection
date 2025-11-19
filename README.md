@@ -4,6 +4,12 @@
 
 1. `git clone https://github.com/ortizfe/group-movie-selection.git`
 
-## Running the Frontend Code:
+## Running the Frontend:
 
-1. '''npm run'''
+1. `cd client`
+2. `npm install`
+3. `npm run dev`
+
+## Running the Backend:
+
+1. `cd server`
