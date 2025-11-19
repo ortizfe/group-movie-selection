@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,18 +7,33 @@
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+body {
+  background-color: #f8ea4f;
 }
-.logo:hover {
+
+.logo {
+  height: 9em;
+  padding: 1.5em;
+  /* will-change: filter; */
+  transition: filter 300ms;
+  overflow-clip-margin: content-box;
+  overflow: clip;
+}
+
+.gif {
+  height: 14em;
+  padding: 1.5em;
+  /* will-change: filter; */
+  transition: filter 300ms;
+  overflow-clip-margin: content-box;
+  overflow: clip;
+}
+/* .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
-}
+} */
 
 @keyframes logo-spin {
   from {
