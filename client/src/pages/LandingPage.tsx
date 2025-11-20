@@ -16,7 +16,7 @@ const LandingPage = () => {
       );
     }
 
-    navigate("/moodsIn");
+    navigate("/mood");
   };
 
   const disableButton = !userName.trim();

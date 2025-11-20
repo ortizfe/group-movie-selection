@@ -1,10 +1,10 @@
 // import { useState, useEffect } from 'react';
 import "./App.css";
-import LandingPage from "./components/LandingPage";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
+    <div className="flex items-center justify-center min-h-screen">
       <LandingPage />
     </div>
   );

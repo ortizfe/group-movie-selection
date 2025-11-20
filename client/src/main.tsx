@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { GlobalStyles, StyledEngineProvider } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router";
+import FiltersPage from "./pages/FiltersPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -12,6 +13,7 @@ createRoot(document.getElementById("root")!).render(
       <BrowserRouter>
         <Routes>
           <Route index path="/" element={<App />} />
+          <Route path="/mood" element={<FiltersPage />} />
         </Routes>
       </BrowserRouter>
     </StyledEngineProvider>
