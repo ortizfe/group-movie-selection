@@ -1,0 +1,10 @@
+# Kaggle data & generated DB
+data/raw/*
+data/processed/*
+
+# Keep empty dirs in Git if you want
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Env files
+server/.env
