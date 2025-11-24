@@ -13,3 +13,9 @@
 ## Running the Backend:
 
 1. `cd server`
+2. `npm install`
+3. `npm --prefix server install`
+4. Seed database (first time only):
+- Place Kaggle CSV(s) under data/ (ignored by git) and run ETL:
+`node server/scripts/ingest_kaggle.js data/tmdb_2023_movies.csv data/movies.sqlite`
+5. `npm --prefix server run dev`
