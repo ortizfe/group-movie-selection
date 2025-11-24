@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../lib/db.js';
-import { scoreMovie } from '../lib/scoring.js';
+import { scoreMovie, debugExplain } from '../lib/scoring.js';
 
 const r = Router();
 
@@ -33,7 +33,17 @@ r.post('/recommendations', (req, res) => {
   }));
 
   const scored = rows
-    .map(r => ({ ...r, score: scoreMovie(r.genres, r.popularity, vibe) }))
+    .map(r => {
+      const score = scoreMovie(r.genres, r.popularity, vibe);
+      const dbg = debugExplain(r.genres, r.popularity, vibe);
+      return {
+        ...r,
+        score,
+        matches: dbg.matches,     // 0..1 per axis
+        axis: dbg.axis,           // movie axis values -1..+1
+        target: dbg.target        // slider targets -1..+1
+      };
+    })
     .sort((a,b) => b.score - a.score)
     .slice(0, 30);
 
