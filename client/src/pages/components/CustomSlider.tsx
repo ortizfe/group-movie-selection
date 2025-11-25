@@ -17,6 +17,7 @@ const CustomSlider = ({
 }) => {
   const handleChange = (event: Event, newValue: number) => {
     setValue(newValue);
+    console.log(event);
   };
 
   return (
