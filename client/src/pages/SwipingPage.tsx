@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router";
 import { RotateCcw } from "lucide-react";
@@ -7,6 +8,10 @@ import TinderSwiping from "./components/TinderSwiping";
 
 const SwipingPage = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    scrollTo(0, 0);
+  });
 
   const handleRestart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,11 +24,11 @@ const SwipingPage = () => {
       <div className="flex flex-row items-center justify-between w-full pb-10">
         <Button
           onClick={() => navigate("/mood")}
-          className="text-[#0c92d1] font-bold pr-20 text-md rounded-2xl hover:bg-[#0c92d1]/50 hover:text-white underline underline-offset-2"
+          className="text-[#0c92d1] text-center font-bold text-md rounded-2xl hover:bg-[#0c92d1]/50 hover:text-white underline underline-offset-2"
         >
           Back
         </Button>
-        <img src={logo} className="h-12" />
+        <img src={logo} className="pl-20 h-12" />
         <Button
           variant="outlined"
           size="small"
