@@ -1,11 +1,12 @@
 import { Router } from 'express';
-import { db } from '../lib/db.js';
+import { getDb } from '../lib/db.js';
 
 const r = Router();
 
 r.get('/movies', (req, res) => {
+  const db = getDb();
   const { q, genre, year, limit = 50 } = req.query;
-  let sql = `SELECT m.id, m.title, m.overview, m.year, m.runtime, m.vote_average, m.vote_count, m.popularity
+  let sql = `SELECT m.id, m.title, m.overview, m.year, m.runtime, m.vote_average, m.popularity
              FROM movies m`;
   const where = [];
   const params = [];
