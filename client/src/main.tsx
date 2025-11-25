@@ -6,18 +6,22 @@ import { GlobalStyles, StyledEngineProvider } from "@mui/material";
 import { BrowserRouter, Routes, Route } from "react-router";
 import FiltersPage from "./pages/FiltersPage.tsx";
 import SwipingPage from "./pages/SwipingPage.tsx";
+import store from "./store/store.ts";
+import { Provider } from "react-redux";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <StyledEngineProvider enableCssLayer>
-      <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
-      <BrowserRouter>
-        <Routes>
-          <Route index path="/" element={<App />} />
-          <Route path="/mood" element={<FiltersPage />} />
-          <Route path="/swiping" element={<SwipingPage />} />
-        </Routes>
-      </BrowserRouter>
-    </StyledEngineProvider>
+    <Provider store={store}>
+      <StyledEngineProvider enableCssLayer>
+        <GlobalStyles styles="@layer theme, base, mui, components, utilities;" />
+        <BrowserRouter>
+          <Routes>
+            <Route index path="/" element={<App />} />
+            <Route path="/mood" element={<FiltersPage />} />
+            <Route path="/swiping" element={<SwipingPage />} />
+          </Routes>
+        </BrowserRouter>
+      </StyledEngineProvider>
+    </Provider>
   </StrictMode>
 );

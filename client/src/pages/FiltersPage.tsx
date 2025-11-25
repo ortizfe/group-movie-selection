@@ -5,11 +5,11 @@ import {
   Checkbox,
   Divider,
   FormControl,
-  FormGroup,
   FormLabel,
   FormControlLabel,
   Stack,
 } from "@mui/material";
+import { useNavigate } from "react-router";
 
 const MAPPING = {
   light: ["Comedy", "Animation", "Family", "Adventure"],
@@ -70,6 +70,8 @@ const FiltersPage = () => {
     apple: false,
     prime: false,
   });
+
+  const navigate = useNavigate();
 
   const handleTone = (t: number) => {
     setTone(t);
@@ -159,8 +161,12 @@ const FiltersPage = () => {
   const { disney, hulu, hbo, netflix, peacock, paramount, apple, prime } =
     filterPlatforms;
 
+  const handleSetFilters = () => {
+    navigate("/swiping");
+  };
+
   return (
-    <div className="flex flex-col items-center text-center h-screen w-full ">
+    <div className="flex flex-col items-center text-center h-screen w-full">
       <Header />
       <div className="w-full">
         <div className="flex flex-col items-center gap-2 pt-2 pb-5">
@@ -297,6 +303,7 @@ const FiltersPage = () => {
             type="submit"
             // disabled={disabledButton}
             className="flex items-center text-white disabled:text-[rgba(0,0,0,1)] bg-[#dd5a87] border-[#ae487c] rounded-md disabled:opacity-50 border-2 disabled:border-[#ead02e] hover:opacity-70 h-[34px] w-auto cursor-pointer text-[18px] disabled:cursor-not-allowed p-4 font-bold"
+            onClick={handleSetFilters}
           >
             Set
           </button>
