@@ -15,12 +15,12 @@ const Header = () => {
   return (
     <div className="pb-5">
       <header>
-        <div className="mx-auto px-4 py-1 space-x-20 flex items-center justify-center gap-8">
+        <div className="mx-auto px-4 space-x-20 flex items-center justify-center gap-8">
           <img src={logo} className="h-12" />
           <Button
             variant="outlined"
             size="small"
-            className="gap-2 bg-[#dd5a87] text-white font-bold text-[14px] hover:opacity-75"
+            className="gap-2 bg-[#dd5a87] text-white font-bold text-[12px] hover:opacity-75"
             onClick={handleRestart}
           >
             <RotateCcw className="w-4 h-4" />
