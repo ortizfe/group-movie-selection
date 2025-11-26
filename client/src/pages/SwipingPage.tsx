@@ -1,7 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router";
 import { RotateCcw } from "lucide-react";
+import { useSelector } from "react-redux";
+import type { RootState } from "../store/store";
 
 import logo from "../assets/movie-matcher.png";
 import TinderSwiping from "./components/TinderSwiping";
@@ -9,9 +11,43 @@ import TinderSwiping from "./components/TinderSwiping";
 const SwipingPage = () => {
   const navigate = useNavigate();
 
+  const { tone, emotion, pacing } = useSelector(
+    (state: RootState) => state.filters
+  );
+
+  const [movies, setMovies] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 2. Helper to convert slider values (-1 to 1) to API values (0 to 1)
+  // const normalize = (val: number) => (val + 1) / 2;
+
   useEffect(() => {
     scrollTo(0, 0);
-  });
+
+    const fetchMovies = async () => {
+      setLoading(true);
+      try {
+        // 3. Connect to the Node/Express backend
+        const response = await fetch("http://localhost:3000/movies", {
+          method: "GET",
+        });
+
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        setMovies(data);
+      } catch (error) {
+        console.error("Failed to fetch movies:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMovies();
+  }, [tone, emotion, pacing]);
 
   const handleRestart = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,9 +75,13 @@ const SwipingPage = () => {
           Restart Game
         </Button>
       </div>
-      <div className="flex flex-col w-full items-center text-center">
-        <TinderSwiping />
-      </div>
+      {loading ? (
+        <h1>Loading</h1>
+      ) : (
+        <div className="flex flex-col w-full items-center text-center">
+          <TinderSwiping movies={movies} />
+        </div>
+      )}
     </div>
   );
 };

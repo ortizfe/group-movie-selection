@@ -1,6 +1,7 @@
 const express = require("express");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config();
+const cors = require("cors");
 const app = express();
 const port = 3000;
 
@@ -8,6 +9,7 @@ const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
 
 app.use(express.json());
+app.use(cors());
 
 const uri = `mongodb+srv://${username}:${password}@bytestack-llc.jrl18.mongodb.net/?appName=bytestack-llc`;
 const databaseName = "group_movie_selection";
@@ -52,7 +54,7 @@ app.get("/movies", async (req, res) => {
     const collection = db.collection("movie_list");
 
     // 3. Use .limit(5) to get only the first 5
-    const movies = await collection.find({}).limit(5).toArray();
+    const movies = await collection.find({}).limit(20).toArray();
 
     res.json(movies);
   } catch (err) {
