@@ -8,6 +8,7 @@ import FiltersPage from "./pages/FiltersPage.tsx";
 import SwipingPage from "./pages/SwipingPage.tsx";
 import store from "./store/store.ts";
 import { Provider } from "react-redux";
+import ResultsPage from "./pages/ResultsPage.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById("root")!).render(
             <Route index path="/" element={<App />} />
             <Route path="/mood" element={<FiltersPage />} />
             <Route path="/swiping" element={<SwipingPage />} />
+            <Route path="/results" element={<ResultsPage />} />
           </Routes>
         </BrowserRouter>
       </StyledEngineProvider>

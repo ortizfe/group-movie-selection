@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "./TinderCard";
 // import TinderCard from "react-tinder-card";
-import { Undo2, X, Heart, Info, RotateCcw } from "lucide-react";
+import { Undo2, X, Heart, Info, CheckCircle } from "lucide-react";
 
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 interface TinderCardRef {
@@ -38,16 +38,18 @@ export interface MovieData {
 
 interface TinderSwipingProps {
   movies: MovieData[];
+  onFinish: (likedMovies: MovieData[]) => void;
 }
 
-const TinderSwiping = ({ movies }: TinderSwipingProps) => {
+const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
   const [currentIndex, setCurrentIndex] = useState(movies.length - 1);
   const [lastDirection, setLastDirection] = useState("");
-  const [gameKey, setGameKey] = useState(0);
+  // const [gameKey, setGameKey] = useState(0);
+
+  const [likedMovies, setLikedMovies] = useState<MovieData[]>([]);
 
   const currentIndexRef = useRef(currentIndex);
 
-  // 2. Type the Refs correctly so TS knows they have swipe/restore methods
   const childRefs = useMemo(
     () =>
       Array(movies.length)
@@ -56,7 +58,6 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
     [movies.length]
   );
 
-  // 3. Type the parameter
   const updateCurrentIndex = (val: number) => {
     setCurrentIndex(val);
     currentIndexRef.current = val;
@@ -68,6 +69,17 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
   const swiped = (direction: string, _nameToDelete: string, index: number) => {
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
+
+    if (direction === "right") {
+      const movie = movies[index];
+      setLikedMovies((prev) => {
+        const safePrev = prev || [];
+        // Prevent duplicates if for some reason swiped is called twice
+        if (safePrev.find((m) => m.id === movie.id)) return prev;
+        console.log("Liked Movie:", movie.title); // Optional: log to see it working
+        return [...safePrev, movie];
+      });
+    }
   };
 
   const outOfFrame = (_name: string, idx: number) => {
@@ -87,12 +99,13 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
     const newIndex = currentIndex + 1;
     updateCurrentIndex(newIndex);
     await childRefs[newIndex].current?.restoreCard();
-  };
 
-  const restartGame = () => {
-    setCurrentIndex(movies.length - 1);
-    setLastDirection("");
-    setGameKey((prev) => prev + 1);
+    //remove movie that was undone
+    const movieRestored = movies[newIndex];
+    setLikedMovies((prev) => {
+      const currentLikes = prev || [];
+      return currentLikes.filter((m) => m.id !== movieRestored.id);
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -112,12 +125,12 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
 
   return (
     <div className="flex flex-col overflow-x-hidden items-center w-full max-w-md px-4">
-      <div className="mb-8 text-center select-none">
-        <p className="text-slate-500 text-sm mt-1">Swipe right to vote yes</p>
+      <div className="mb-4 text-center select-none">
+        <p className="text-black text-md mt-1">Swipe right to vote yes</p>
       </div>
 
       <div className="relative w-full h-[500px] flex justify-center perspective-1000">
-        <React.Fragment key={gameKey}>
+        <React.Fragment>
           {movies.map((movie, index) => (
             <TinderCard
               ref={childRefs[index]}
@@ -176,16 +189,19 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
         </React.Fragment>
 
         {currentIndex < 0 && (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-400 select-none z-0">
+          <div className="absolute inset-0 flex items-center justify-center text-black select-none z-0">
             <div className="text-center animate-in fade-in zoom-in duration-300">
               <div className="text-4xl mb-2">🎬</div>
-              <p className="text-lg font-medium">No more movies!</p>
+              <p className="text-xl font-bold">No more movies!</p>
+              <p className="text-md mt-2 mb-4">
+                You liked {likedMovies.length} movies
+              </p>
               <button
-                onClick={restartGame}
-                className="mt-4 flex items-center gap-2 mx-auto px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-colors shadow-md"
+                onClick={() => onFinish(likedMovies)}
+                className="flex items-center gap-2 mx-auto px-6 py-3 bg-[#0c92d1] text-white rounded-full hover:bg-[#dd5a87] transition-colors shadow-lg font-bold text-lg hover:cursor-pointer"
               >
-                <RotateCcw size={16} />
-                Start Over
+                <CheckCircle size={20} />
+                See Results
               </button>
             </div>
           </div>
@@ -208,7 +224,7 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
 
         <button
           className={`p-3 rounded-full bg-slate-100 text-slate-600 shadow-md transition-all transform hover:scale-110 active:scale-95 ${
-            !canGoBack ? "opacity-50 cursor-not-allowed" : "hover:bg-slate-200"
+            !canGoBack ? "opacity-50 cursor-not-allowed" : "hover:bg-[#dd5a87]"
           }`}
           onClick={() => goBack()}
           disabled={!canGoBack}
@@ -239,7 +255,7 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
       {/* Info Text */}
       <div className="h-8 mt-6 select-none">
         {lastDirection ? (
-          <p className="text-slate-500 font-medium animate-pulse">
+          <p className="text-slate-700 font-medium animate-pulse">
             You swiped{" "}
             <span className="font-bold uppercase text-slate-800">
               {lastDirection}

@@ -169,8 +169,6 @@ const SwipingPage = () => {
       const scoredMovies = testData.map((movie) => {
         const stats = getMovieStats(movie.genres || "");
 
-        // Calculate "Distance" (Difference) between user preference and movie stats
-        // Lower distance = Better match
         const pacingDiff = Math.abs(pacing - stats.pacing);
         const toneDiff = Math.abs(tone - stats.tone);
         const emotionDiff = Math.abs(emotion - stats.emotion);
@@ -180,17 +178,14 @@ const SwipingPage = () => {
         return { ...movie, matchScore: totalDiff };
       });
 
-      // 2. Sort by best match (lowest difference)
       scoredMovies.sort((a, b) => a.matchScore - b.matchScore);
 
-      // 3. Take the top 20 matches, then shuffle them slightly
-      // so the user doesn't get the exact same order every time
       const topMatches = scoredMovies.slice(0, 10);
       const shuffledTopMatches = topMatches.sort(() => 0.5 - Math.random());
 
       setMovies(shuffledTopMatches);
       setLoading(false);
-    }, 1000); // Simulated delay
+    }, 1500); // Simulated delay
 
     // const timer = setTimeout(() => {
     //   // 1. Shuffle and slice data
@@ -234,6 +229,12 @@ const SwipingPage = () => {
     navigate("/");
   };
 
+  const handleFinish = (likedMovies: MovieData[]) => {
+    console.log("Submitting liked movies:", likedMovies);
+    // Navigate to results page with the liked movies in state
+    navigate("/results", { state: { likedMovies } });
+  };
+
   return (
     <div className="flex flex-col items-center text-center h-screen w-full">
       <div className="flex flex-row items-center justify-between w-full pb-10">
@@ -261,7 +262,7 @@ const SwipingPage = () => {
         </div>
       ) : (
         <div className="flex flex-col w-full items-center text-center">
-          <TinderSwiping movies={movies} />
+          <TinderSwiping movies={movies} onFinish={handleFinish} />
         </div>
       )}
     </div>
