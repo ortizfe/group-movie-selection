@@ -63,14 +63,12 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
   const canGoBack = currentIndex < movies.length - 1;
   const canSwipe = currentIndex >= 0;
 
-  // 4. Type the parameters (nameToDelete is unused but typed for consistency)
   const swiped = (direction: string, _nameToDelete: string, index: number) => {
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
 
   const outOfFrame = (_name: string, idx: number) => {
-    // Added optional chaining (?.) for safety
     if (currentIndexRef.current >= idx && childRefs[idx].current) {
       childRefs[idx].current?.restoreCard();
     }
@@ -78,7 +76,6 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
 
   const swipe = async (dir: string) => {
     if (canSwipe && currentIndex < movies.length) {
-      // Ensure the ref exists before calling swipe
       await childRefs[currentIndex].current?.swipe(dir);
     }
   };
@@ -87,7 +84,6 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
     if (!canGoBack) return;
     const newIndex = currentIndex + 1;
     updateCurrentIndex(newIndex);
-    // Ensure the ref exists before calling restoreCard
     await childRefs[newIndex].current?.restoreCard();
   };
 
@@ -98,13 +94,11 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md px-4">
-      {/* Header */}
+    <div className="flex flex-col overflow-x-hidden items-center w-full max-w-md px-4">
       <div className="mb-8 text-center select-none">
         <p className="text-slate-500 text-sm mt-1">Swipe right to vote yes</p>
       </div>
 
-      {/* Card Container */}
       <div className="relative w-full h-[500px] flex justify-center perspective-1000">
         <React.Fragment key={gameKey}>
           {movies.map((movie, index) => (
@@ -151,7 +145,6 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
           ))}
         </React.Fragment>
 
-        {/* Empty State */}
         {currentIndex < 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-slate-400 select-none z-0">
             <div className="text-center animate-in fade-in zoom-in duration-300">
@@ -169,8 +162,7 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
         )}
       </div>
 
-      {/* Controls */}
-      <div className="flex items-center gap-6 mt-10 z-20">
+      <div className="flex items-center gap-6 mt-10 z-20 pt-2">
         <button
           className={`p-4 rounded-full bg-white shadow-lg text-red-500 transition-all transform hover:scale-110 active:scale-95 border border-red-100 ${
             !canSwipe
