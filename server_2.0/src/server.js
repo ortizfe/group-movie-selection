@@ -50,10 +50,8 @@ app.get("/", (req, res) => {
 
 app.get("/movies", async (req, res) => {
   try {
-    // 2. Use the existing global 'db' connection
     const collection = db.collection("movie_list");
 
-    // 3. Use .limit(5) to get only the first 5
     const movies = await collection.find({}).limit(20).toArray();
 
     res.json(movies);
@@ -61,7 +59,6 @@ app.get("/movies", async (req, res) => {
     console.error(err);
     res.status(500).send("Error fetching results");
   }
-  // DO NOT close the client here. Keep it open for the next request.
 });
 
 app.listen(port, () => {

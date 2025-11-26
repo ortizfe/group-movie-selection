@@ -9,29 +9,30 @@ interface TinderCardRef {
 }
 
 export interface MovieData {
+  _id: string;
   id: number;
   title: string;
   vote_average?: number;
   vote_count?: number;
   status?: string;
-  release_date?: Date;
+  release_date?: string;
   revenue?: number;
-  runtime: number;
-  adult: boolean;
-  backdrop_path: string;
-  budget: number;
-  homepage: string;
-  imdb_id: string;
-  original_language: string;
-  original_title: string;
-  overview: string;
-  popularity: number;
-  poster_path: string;
-  genres: string;
-  production_companies: string;
-  production_countries: string;
-  spoken_languages: string;
-  keywords: string;
+  runtime?: number;
+  adult?: boolean;
+  backdrop_path?: string;
+  budget?: number;
+  homepage?: string;
+  imdb_id?: string;
+  original_language?: string;
+  original_title?: string;
+  overview?: string;
+  popularity?: number;
+  poster_path?: string;
+  genres?: string;
+  production_companies?: string;
+  production_countries?: string;
+  spoken_languages?: string;
+  keywords?: string;
 }
 
 interface TinderSwipingProps {
