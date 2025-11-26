@@ -1,7 +1,6 @@
-import { useLocation, useNavigate } from "react-router";
+import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import { type MovieData } from "./components/TinderSwiping";
-import { Button } from "@mui/material";
 import Header from "./components/Header";
 
 import testData from "../api/test.json";
@@ -10,7 +9,6 @@ const TMDB_BASE_URL = "https://image.tmdb.org/t/p/w500";
 
 const ResultsPage = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   // Retrieve the passed state
   const likedMovies = (location.state?.likedMovies as MovieData[]) || [];
   const [winner, setWinner] = useState<MovieData | null>(null);
