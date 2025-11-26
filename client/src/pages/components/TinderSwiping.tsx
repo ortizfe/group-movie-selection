@@ -2,7 +2,8 @@ import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "./TinderCard";
 // import TinderCard from "react-tinder-card";
 import { Undo2, X, Heart, Info, RotateCcw } from "lucide-react";
-import poster from "../../assets/poster.jpg";
+
+const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 interface TinderCardRef {
   swipe: (dir: string) => Promise<void>;
   restoreCard: () => Promise<void>;
@@ -15,7 +16,7 @@ export interface MovieData {
   vote_average?: number;
   vote_count?: number;
   status?: string;
-  release_date?: string;
+  release_date: string;
   revenue?: number;
   runtime?: number;
   adult?: boolean;
@@ -94,6 +95,21 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
     setGameKey((prev) => prev + 1);
   };
 
+  const formatDate = (dateString: string) => {
+    if (!dateString) return "Unknown Date";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      });
+    } catch (e) {
+      console.log(e);
+      return dateString;
+    }
+  };
+
   return (
     <div className="flex flex-col overflow-x-hidden items-center w-full max-w-md px-4">
       <div className="mb-8 text-center select-none">
@@ -113,12 +129,22 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
               <div
                 className="relative w-[320px] h-[500px] bg-white rounded-2xl shadow-xl overflow-hidden ring-1 ring-black/5"
                 style={{
-                  backgroundImage: `url(${poster})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               >
                 <div className="absolute bottom-0 left-0 w-full h-3/4 bg-linear-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+
+                <div className="h-[75%] w-full overflow-hidden relative">
+                  <img
+                    className="w-full h-full object-contain pointer-events-none select-none"
+                    src={
+                      movie.backdrop_path
+                        ? `${TMDB_IMAGE_BASE}${movie.backdrop_path}`
+                        : ``
+                    }
+                  />
+                </div>
 
                 <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10 flex flex-col gap-2">
                   <h3 className="text-2xl font-bold leading-tight drop-shadow-md">
@@ -130,6 +156,9 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
                   </p>
 
                   <div className="mt-2 flex items-center justify-between">
+                    <span className="text-xs text-gray-400 font-medium">
+                      Released: {formatDate(movie.release_date)}
+                    </span>
                     <a
                       href={`https://www.imdb.com/title/${movie.imdb_id}`}
                       target="_blank"
@@ -217,9 +246,7 @@ const TinderSwiping = ({ movies }: TinderSwipingProps) => {
             </span>
           </p>
         ) : (
-          <p className="text-slate-400 text-sm">
-            Swipe cards, use buttons, or arrow keys
-          </p>
+          <p className="text-slate-400 text-sm">Swipe cards or use buttons</p>
         )}
       </div>
     </div>
