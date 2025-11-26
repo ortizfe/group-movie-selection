@@ -10,6 +10,9 @@ import {
   Stack,
 } from "@mui/material";
 import { useNavigate } from "react-router";
+import { useDispatch, useSelector } from "react-redux";
+import type { RootState } from "../store/store";
+import { setTone, setPacing, setEmotion } from "../store/filtersSlice";
 
 const MAPPING = {
   light: ["Comedy", "Animation", "Family", "Adventure"],
@@ -57,9 +60,9 @@ const pacingMarks = [
 ];
 
 const FiltersPage = () => {
-  const [tone, setTone] = useState(0);
-  const [pacing, setPacing] = useState(0);
-  const [emotion, setEmotion] = useState(0);
+  // const [tone, setTone] = useState(0);
+  // const [pacing, setPacing] = useState(0);
+  // const [emotion, setEmotion] = useState(0);
   const [filterPlatforms, setFilterPlatforms] = useState({
     disney: false,
     hulu: false,
@@ -70,19 +73,23 @@ const FiltersPage = () => {
     apple: false,
     prime: false,
   });
+  const dispatch = useDispatch();
+  const { tone, pacing, emotion } = useSelector(
+    (state: RootState) => state.filters
+  );
 
   const navigate = useNavigate();
 
   const handleTone = (t: number) => {
-    setTone(t);
+    dispatch(setTone(t));
   };
 
   const handlePacing = (p: number) => {
-    setPacing(p);
+    dispatch(setPacing(p));
   };
 
   const handleEmotion = (e: number) => {
-    setEmotion(e);
+    dispatch(setEmotion(e));
   };
 
   const MOODS = [
