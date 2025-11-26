@@ -1,25 +1,61 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "./TinderCard";
 // import TinderCard from "react-tinder-card";
-import { Undo2, X, Heart, Info } from "lucide-react";
+import { Undo2, X, Heart, Info, RotateCcw } from "lucide-react";
+import poster from "../../assets/poster.jpg";
+interface TinderCardRef {
+  swipe: (dir: string) => Promise<void>;
+  restoreCard: () => Promise<void>;
+}
 
-const TinderSwiping = ({ movies }) => {
+export interface MovieData {
+  id: number;
+  title: string;
+  vote_average?: number;
+  vote_count?: number;
+  status?: string;
+  release_date?: Date;
+  revenue?: number;
+  runtime: number;
+  adult: boolean;
+  backdrop_path: string;
+  budget: number;
+  homepage: string;
+  imdb_id: string;
+  original_language: string;
+  original_title: string;
+  overview: string;
+  popularity: number;
+  poster_path: string;
+  genres: string;
+  production_companies: string;
+  production_countries: string;
+  spoken_languages: string;
+  keywords: string;
+}
+
+interface TinderSwipingProps {
+  movies: MovieData[];
+}
+
+const TinderSwiping = ({ movies }: TinderSwipingProps) => {
   const [currentIndex, setCurrentIndex] = useState(movies.length - 1);
   const [lastDirection, setLastDirection] = useState("");
-  const [gameKey, setGameKey] = useState(0); // Used to reset the game state
+  const [gameKey, setGameKey] = useState(0);
 
-  // Used for outOfFrame closure
   const currentIndexRef = useRef(currentIndex);
 
+  // 2. Type the Refs correctly so TS knows they have swipe/restore methods
   const childRefs = useMemo(
     () =>
       Array(movies.length)
         .fill(0)
-        .map(() => React.createRef()),
-    [movies.length, gameKey] // Re-create refs when game resets
+        .map(() => React.createRef<TinderCardRef>()),
+    [movies.length]
   );
 
-  const updateCurrentIndex = (val) => {
+  // 3. Type the parameter
+  const updateCurrentIndex = (val: number) => {
     setCurrentIndex(val);
     currentIndexRef.current = val;
   };
@@ -27,84 +63,68 @@ const TinderSwiping = ({ movies }) => {
   const canGoBack = currentIndex < movies.length - 1;
   const canSwipe = currentIndex >= 0;
 
-  // set last direction and decrease current index
-  const swiped = (direction, nameToDelete, index) => {
+  // 4. Type the parameters (nameToDelete is unused but typed for consistency)
+  const swiped = (direction: string, _nameToDelete: string, index: number) => {
     setLastDirection(direction);
     updateCurrentIndex(index - 1);
   };
 
-  const outOfFrame = (name, idx) => {
-    // console.log(`${name} left the screen!`);
-  };
-
-  const swipe = async (dir) => {
-    if (canSwipe && currentIndex < movies.length) {
-      await childRefs[currentIndex].current.swipe(dir); // Swipe the card!
+  const outOfFrame = (_name: string, idx: number) => {
+    // Added optional chaining (?.) for safety
+    if (currentIndexRef.current >= idx && childRefs[idx].current) {
+      childRefs[idx].current?.restoreCard();
     }
   };
 
-  // increase current index and show card
+  const swipe = async (dir: string) => {
+    if (canSwipe && currentIndex < movies.length) {
+      // Ensure the ref exists before calling swipe
+      await childRefs[currentIndex].current?.swipe(dir);
+    }
+  };
+
   const goBack = async () => {
     if (!canGoBack) return;
     const newIndex = currentIndex + 1;
     updateCurrentIndex(newIndex);
-    await childRefs[newIndex].current.restoreCard();
+    // Ensure the ref exists before calling restoreCard
+    await childRefs[newIndex].current?.restoreCard();
   };
 
   const restartGame = () => {
     setCurrentIndex(movies.length - 1);
     setLastDirection("");
-    setGameKey((prev) => prev + 1); // Forces re-render of cards
+    setGameKey((prev) => prev + 1);
   };
-
-  // Add Keyboard Support
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (currentIndex < 0) return; // Don't swipe if game over
-      if (e.key === "ArrowLeft") swipe("left");
-      if (e.key === "ArrowRight") swipe("right");
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentIndex, gameKey]); // Dependencies ensure updated closures
 
   return (
     <div className="flex flex-col items-center w-full max-w-md px-4">
       {/* Header */}
       <div className="mb-8 text-center select-none">
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2 justify-center">
-          MovieMatcher <span className="text-red-500 text-4xl">🍿</span>
-        </h1>
-        <p className="text-slate-500 text-sm mt-1">
-          Swipe right to add to watchlist
-        </p>
+        <p className="text-slate-500 text-sm mt-1">Swipe right to vote yes</p>
       </div>
 
       {/* Card Container */}
       <div className="relative w-full h-[500px] flex justify-center perspective-1000">
-        {/* We use gameKey to force a full re-mount of cards on restart */}
         <React.Fragment key={gameKey}>
           {movies.map((movie, index) => (
             <TinderCard
               ref={childRefs[index]}
               className="absolute top-0"
               key={movie.id}
-              onSwipe={(dir) => swiped(dir, movie.title, index)}
+              onSwipe={(dir: string) => swiped(dir, movie.title, index)}
               onCardLeftScreen={() => outOfFrame(movie.title, index)}
             >
               <div
                 className="relative w-[320px] h-[500px] bg-white rounded-2xl shadow-xl overflow-hidden ring-1 ring-black/5"
                 style={{
-                  backgroundImage: `url(${movie.poster_path})`,
+                  backgroundImage: `url(${poster})`,
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                 }}
               >
-                {/* Gradient Overlay for Text Readability */}
-                <div className="absolute bottom-0 left-0 w-full h-3/4 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 w-full h-3/4 bg-linear-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
 
-                {/* Content */}
                 <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10 flex flex-col gap-2">
                   <h3 className="text-2xl font-bold leading-tight drop-shadow-md">
                     {movie.title}
@@ -120,9 +140,9 @@ const TinderSwiping = ({ movies }) => {
                       target="_blank"
                       rel="noreferrer"
                       className="flex items-center gap-1 text-xs font-bold bg-[#f5c518] text-black px-3 py-1.5 rounded-full hover:bg-[#e2b616] transition-colors pointer-events-auto"
-                      onPointerDown={(e) => e.stopPropagation()} // Prevent drag when clicking link
+                      onPointerDown={(e) => e.stopPropagation()}
                     >
-                      IMDb <Info size={14} />
+                      Details <Info size={14} />
                     </a>
                   </div>
                 </div>
@@ -131,7 +151,7 @@ const TinderSwiping = ({ movies }) => {
           ))}
         </React.Fragment>
 
-        {/* Empty State (Behind cards) */}
+        {/* Empty State */}
         {currentIndex < 0 && (
           <div className="absolute inset-0 flex items-center justify-center text-slate-400 select-none z-0">
             <div className="text-center animate-in fade-in zoom-in duration-300">
@@ -212,8 +232,6 @@ const TinderSwiping = ({ movies }) => {
     </div>
   );
 };
-
-// import poster from "../../assets/poster.jpg";
 
 // type Direction = "left" | "right" | "up" | "down";
 // export interface MovieData {

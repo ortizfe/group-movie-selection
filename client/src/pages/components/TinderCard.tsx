@@ -1,20 +1,44 @@
-import { useState, useRef, useImperativeHandle, forwardRef } from "react";
+import React, {
+  useState,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 
-const TinderCard = forwardRef(
+// Define strict types for directions to prevent string typos
+export type Direction = "left" | "right";
+
+export interface TinderCardRef {
+  swipe: (dir: Direction) => Promise<void>;
+  restoreCard: () => Promise<void>;
+}
+
+export interface TinderCardProps {
+  children?: React.ReactNode;
+  onSwipe: (dir: Direction) => void;
+  onCardLeftScreen: (dir: Direction) => void;
+  className?: string;
+}
+
+const TinderCard = forwardRef<TinderCardRef, TinderCardProps>(
   ({ children, onSwipe, onCardLeftScreen, className }, ref) => {
     const [offset, setOffset] = useState({ x: 0, y: 0 });
     const [isAnimating, setIsAnimating] = useState(false);
+
+    // New state to handle the visual cursor change
+    const [isActive, setIsActive] = useState(false);
+
+    // Keep ref for logic to track movement without triggering excessive re-renders during drag
     const isDragging = useRef(false);
     const startPos = useRef({ x: 0, y: 0 });
-    const cardRef = useRef(null);
+    const cardRef = useRef<HTMLDivElement>(null);
 
     useImperativeHandle(ref, () => ({
-      async swipe(dir: string) {
+      async swipe(dir: Direction) {
         setIsAnimating(true);
         const targetX = dir === "left" ? -1000 : 1000;
         setOffset({ x: targetX, y: 0 });
 
-        // Wait for animation to finish before triggering callback
         setTimeout(() => {
           onSwipe(dir);
           onCardLeftScreen(dir);
@@ -27,17 +51,18 @@ const TinderCard = forwardRef(
       },
     }));
 
-    const handlePointerDown = (e) => {
+    const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
       if (e.button !== 0 && e.pointerType === "mouse") return;
 
       isDragging.current = true;
+      setIsActive(true); // Trigger re-render to update cursor
       setIsAnimating(false);
       startPos.current = { x: e.clientX, y: e.clientY };
 
-      e.target.setPointerCapture(e.pointerId);
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
     };
 
-    const handlePointerMove = (e) => {
+    const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
       if (!isDragging.current) return;
 
       const dx = e.clientX - startPos.current.x;
@@ -46,16 +71,17 @@ const TinderCard = forwardRef(
       setOffset({ x: dx, y: dy });
     };
 
-    const handlePointerUp = (e) => {
+    const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
       if (!isDragging.current) return;
       isDragging.current = false;
-      e.target.releasePointerCapture(e.pointerId);
+      setIsActive(false); // Reset cursor
+
+      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
 
       const SWIPE_THRESHOLD = 100;
 
       if (Math.abs(offset.x) > SWIPE_THRESHOLD) {
-        // Swiped far enough
-        const dir = offset.x > 0 ? "right" : "left";
+        const dir: Direction = offset.x > 0 ? "right" : "left";
         setIsAnimating(true);
         setOffset({ x: dir === "right" ? 1000 : -1000, y: offset.y });
 
@@ -64,7 +90,6 @@ const TinderCard = forwardRef(
           onCardLeftScreen(dir);
         }, 300);
       } else {
-        // Snap back
         setIsAnimating(true);
         setOffset({ x: 0, y: 0 });
         setTimeout(() => setIsAnimating(false), 300);
@@ -79,13 +104,13 @@ const TinderCard = forwardRef(
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp} // Handle interruption
-        className={`${className} touch-none select-none`}
+        onPointerCancel={handlePointerUp}
+        className={`${className || ""} touch-none select-none`}
         style={{
           transform: `translate(${offset.x}px, ${offset.y}px) rotate(${rotation}deg)`,
           transition: isAnimating ? "transform 0.3s ease-out" : "none",
           zIndex: 100,
-          cursor: isDragging.current ? "grabbing" : "grab",
+          cursor: isActive ? "grabbing" : "grab",
         }}
       >
         {children}
@@ -93,5 +118,8 @@ const TinderCard = forwardRef(
     );
   }
 );
+
+// Display name is useful for debugging in React DevTools
+TinderCard.displayName = "TinderCard";
 
 export default TinderCard;
