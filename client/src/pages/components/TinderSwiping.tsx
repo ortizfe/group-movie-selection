@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "./TinderCard";
 // import TinderCard from "react-tinder-card";
-import { Undo2, X, Heart, Info, CheckCircle } from "lucide-react";
+import { Undo2, X, Heart, Info, CheckCircle, Eye } from "lucide-react";
 
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 interface TinderCardRef {
@@ -124,7 +124,7 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
   };
 
   return (
-    <div className="flex flex-col overflow-x-hidden items-center w-full max-w-md px-4">
+    <div className="flex flex-col overflow-x-hidden items-center w-full max-w-lg px-4">
       <div className="mb-4 text-center select-none">
         <p className="text-black text-md mt-1">Swipe right to vote yes</p>
       </div>
@@ -144,7 +144,7 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
                 onCardLeftScreen={() => outOfFrame(movie.title, index)}
               >
                 <div className="w-[400px] h-[500px] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col text-left">
-                  <div className="h-60 w-full shrink-0 bg-slate-200">
+                  <div className="h-50 w-full shrink-0 bg-slate-200">
                     {movie.backdrop_path ? (
                       <img
                         className="w-full h-full object-cover pointer-events-none select-none"
@@ -224,7 +224,7 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
         )}
       </div>
 
-      <div className="flex items-center gap-6 mt-10 z-20 pt-2">
+      <div className="flex items-center justify-center flex-wrap gap-4 mt-10 z-20 pt-2 w-full">
         <button
           className={`p-4 rounded-full bg-white shadow-lg text-red-500 transition-all transform hover:scale-110 active:scale-95 border border-red-100 ${
             !canSwipe
@@ -266,9 +266,22 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
             className="text-green-500"
           />
         </button>
+
+        <button
+          className={`px-5 py-3 rounded-full bg-white shadow-lg text-[#0c92d1] transition-all transform hover:scale-105 active:scale-95 border border-blue-100 flex items-center gap-2 font-bold ${
+            !canSwipe
+              ? "opacity-50 cursor-not-allowed grayscale"
+              : "hover:shadow-blue-200 hover:bg-blue-50"
+          }`}
+          onClick={() => swipe("left")} // Swipes left (dislike action)
+          disabled={!canSwipe}
+          aria-label="Mark as Watched"
+        >
+          <Eye size={24} strokeWidth={2.5} />
+          <span>Watched</span>
+        </button>
       </div>
 
-      {/* Info Text */}
       <div className="h-8 mt-6 select-none">
         {lastDirection ? (
           <p className="text-slate-700 font-medium animate-pulse">
