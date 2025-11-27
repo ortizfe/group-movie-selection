@@ -224,7 +224,7 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
         )}
       </div>
 
-      <div className="flex items-center justify-center flex-wrap gap-4 mt-10 z-20 pt-2 w-full">
+      <div className="flex items-center justify-center flex-wrap gap-4 mt-10 z-20 w-full">
         <button
           className={`p-4 rounded-full bg-white shadow-lg text-red-500 transition-all transform hover:scale-110 active:scale-95 border border-red-100 ${
             !canSwipe
@@ -266,7 +266,9 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
             className="text-green-500"
           />
         </button>
+      </div>
 
+      <div className="pt-2 justify-center">
         <button
           className={`px-5 py-3 rounded-full bg-white shadow-lg text-[#0c92d1] transition-all transform hover:scale-105 active:scale-95 border border-blue-100 flex items-center gap-2 font-bold ${
             !canSwipe
@@ -282,7 +284,7 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
         </button>
       </div>
 
-      <div className="h-8 mt-6 select-none">
+      <div className="h-8 mt-4 select-none">
         {lastDirection ? (
           <p className="text-slate-700 font-medium animate-pulse">
             You swiped{" "}
