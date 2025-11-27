@@ -131,61 +131,77 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
 
       <div className="relative w-full h-[500px] flex justify-center perspective-1000">
         <React.Fragment>
-          {movies.map((movie, index) => (
-            <TinderCard
-              ref={childRefs[index]}
-              className="absolute top-0"
-              key={movie.id}
-              onSwipe={(dir: string) => swiped(dir, movie.title, index)}
-              onCardLeftScreen={() => outOfFrame(movie.title, index)}
-            >
-              <div
-                className="relative w-[320px] h-[500px] bg-white rounded-2xl shadow-xl overflow-hidden ring-1 ring-black/5"
-                style={{
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
+          {movies.map((movie, index) => {
+            const overviewText = movie.overview || "";
+            const isLongDescription = overviewText.length > 200;
+
+            return (
+              <TinderCard
+                ref={childRefs[index]}
+                className="absolute top-0"
+                key={movie.id}
+                onSwipe={(dir: string) => swiped(dir, movie.title, index)}
+                onCardLeftScreen={() => outOfFrame(movie.title, index)}
               >
-                <div className="absolute bottom-0 left-0 w-full h-3/4 bg-linear-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+                <div className="w-[400px] h-[500px] bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col text-left">
+                  <div className="h-60 w-full shrink-0 bg-slate-200">
+                    {movie.backdrop_path ? (
+                      <img
+                        className="w-full h-full object-cover pointer-events-none select-none"
+                        src={`${TMDB_IMAGE_BASE}${movie.backdrop_path}`}
+                        alt={movie.title}
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                        No Image
+                      </div>
+                    )}
+                  </div>
 
-                <div className="h-[75%] w-full overflow-hidden relative">
-                  <img
-                    className="w-full h-full object-contain pointer-events-none select-none"
-                    src={
-                      movie.backdrop_path
-                        ? `${TMDB_IMAGE_BASE}${movie.backdrop_path}`
-                        : ``
-                    }
-                  />
-                </div>
+                  <div className="flex-1 p-4 flex flex-col">
+                    <div className="shrink-0 mb-2">
+                      <h3 className="text-xl font-bold leading-tight text-gray-900 line-clamp-2">
+                        {movie.title}
+                      </h3>
+                    </div>
 
-                <div className="absolute bottom-0 left-0 w-full p-6 text-white z-10 flex flex-col gap-2">
-                  <h3 className="text-2xl font-bold leading-tight drop-shadow-md">
-                    {movie.title}
-                  </h3>
+                    <div className="flex-1 overflow-hidden relative">
+                      <p
+                        className={`text-gray-600 leading-snug ${
+                          isLongDescription
+                            ? "text-xs line-clamp-8"
+                            : "text-sm line-clamp-6"
+                        }`}
+                      >
+                        {movie.overview || "No overview available."}
+                      </p>
+                    </div>
 
-                  <p className="text-sm text-gray-200 line-clamp-3 opacity-90 drop-shadow-sm">
-                    {movie.overview}
-                  </p>
+                    <div>
+                      <p className="text-xs line-clamp-6 font-bold text-[#0c92d1]">
+                        {movie.genres}
+                      </p>
+                    </div>
 
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-xs text-gray-400 font-medium">
-                      Released: {formatDate(movie.release_date)}
-                    </span>
-                    <a
-                      href={`https://www.imdb.com/title/${movie.imdb_id}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-1 text-xs font-bold bg-[#f5c518] text-black px-3 py-1.5 rounded-full hover:bg-[#e2b616] transition-colors pointer-events-auto"
-                      onPointerDown={(e) => e.stopPropagation()}
-                    >
-                      Details <Info size={14} />
-                    </a>
+                    <div className="shrink-0 mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                      <span className="text-xs text-gray-800 font-medium">
+                        {formatDate(movie.release_date)}
+                      </span>
+                      <a
+                        href={`https://www.imdb.com/title/${movie.imdb_id}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        onPointerDown={(e) => e.stopPropagation()}
+                        className="flex items-center gap-1 text-xs font-bold bg-[#f5c518] text-black px-3 py-1.5 rounded-full hover:bg-[#e2b616] transition-colors pointer-events-auto"
+                      >
+                        Details <Info size={14} />
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </TinderCard>
-          ))}
+              </TinderCard>
+            );
+          })}
         </React.Fragment>
 
         {currentIndex < 0 && (
@@ -262,12 +278,14 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
             </span>
           </p>
         ) : (
-          <p className="text-slate-400 text-sm">Swipe cards or use buttons</p>
+          <p className="text-slate-800 text-sm">Swipe cards or use buttons</p>
         )}
       </div>
     </div>
   );
 };
+
+export default TinderSwiping;
 
 // type Direction = "left" | "right" | "up" | "down";
 // export interface MovieData {
@@ -552,4 +570,4 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
 //   );
 // };
 
-export default TinderSwiping;
+// export default TinderSwiping;

@@ -62,7 +62,7 @@ const ResultsPage = () => {
               <h2 className="font-bold text-2xl leading-tight mb-3 text-gray-800">
                 {winner.title}
               </h2>
-              <p className="text-base text-gray-600 line-clamp-4 mb-4 flex-1">
+              <p className="text-base text-gray-600 line-clamp-10 text-start mb-4 flex-1">
                 {winner.overview}
               </p>
 

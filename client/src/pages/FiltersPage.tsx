@@ -60,9 +60,6 @@ const pacingMarks = [
 ];
 
 const FiltersPage = () => {
-  // const [tone, setTone] = useState(0);
-  // const [pacing, setPacing] = useState(0);
-  // const [emotion, setEmotion] = useState(0);
   const [filterPlatforms, setFilterPlatforms] = useState({
     disney: false,
     hulu: false,
