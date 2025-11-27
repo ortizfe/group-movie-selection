@@ -1,12 +1,12 @@
 import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
-import { type MovieData } from "./components/TinderSwiping"; // Ensure this path matches your file structure
+import { type MovieData } from "./components/TinderSwiping";
 import Header from "./components/Header";
 
 import testData from "../api/test.json";
 
 const TMDB_BASE_URL = "https://image.tmdb.org/t/p/w1280";
-const TMDB_THUMB_URL = "https://image.tmdb.org/t/p/w200"; // Smaller image for leaderboard
+const TMDB_THUMB_URL = "https://image.tmdb.org/t/p/w200";
 
 const ResultsPage = () => {
   const location = useLocation();
@@ -163,7 +163,7 @@ const ResultsPage = () => {
                         className="flex gap-3 items-center p-2 rounded-lg hover:bg-gray-50 transition-colors border-b border-gray-100 last:border-0"
                       >
                         {/* Rank Number */}
-                        <span className="text-2xl font-bold text-gray-300 w-6 text-center">
+                        <span className="text-2xl font-bold text-gray-500 w-6 text-center">
                           {index + 2}
                         </span>
 

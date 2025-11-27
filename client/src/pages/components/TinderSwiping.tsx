@@ -2,6 +2,10 @@ import React, { useMemo, useRef, useState } from "react";
 import TinderCard from "./TinderCard";
 // import TinderCard from "react-tinder-card";
 import { Undo2, X, Heart, Info, CheckCircle, Eye } from "lucide-react";
+import LinearProgress, {
+  type LinearProgressProps,
+} from "@mui/material/LinearProgress";
+import { Box, Typography } from "@mui/material";
 
 const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/w500";
 interface TinderCardRef {
@@ -41,12 +45,30 @@ interface TinderSwipingProps {
   onFinish: (likedMovies: MovieData[]) => void;
 }
 
+function LinearProgressWithLabel(
+  props: LinearProgressProps & { value: number }
+) {
+  return (
+    <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ width: "100%", mr: 1 }}>
+        <LinearProgress variant="determinate" {...props} />
+      </Box>
+      <Box sx={{ minWidth: 10 }}>
+        <Typography
+          variant="body2"
+          sx={{ color: "text.secondary" }}
+        >{`${Math.round(props.value)}%`}</Typography>
+      </Box>
+    </Box>
+  );
+}
+
 const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
   const [currentIndex, setCurrentIndex] = useState(movies.length - 1);
   const [lastDirection, setLastDirection] = useState("");
-  // const [gameKey, setGameKey] = useState(0);
 
   const [likedMovies, setLikedMovies] = useState<MovieData[]>([]);
+  const [progress, setProgress] = useState(0);
 
   const currentIndexRef = useRef(currentIndex);
 
@@ -80,6 +102,10 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
         return [...safePrev, movie];
       });
     }
+
+    setProgress((prev) => {
+      return prev + 10;
+    });
   };
 
   const outOfFrame = (_name: string, idx: number) => {
@@ -106,6 +132,10 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
       const currentLikes = prev || [];
       return currentLikes.filter((m) => m.id !== movieRestored.id);
     });
+
+    setProgress((prev) => {
+      return prev - 10;
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -127,6 +157,9 @@ const TinderSwiping = ({ movies, onFinish }: TinderSwipingProps) => {
     <div className="flex flex-col overflow-x-hidden items-center w-full max-w-lg px-4">
       <div className="mb-4 text-center select-none">
         <p className="text-black text-md mt-1">Swipe right to vote yes</p>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgressWithLabel value={progress} />
+        </Box>
       </div>
 
       <div className="relative w-full h-[500px] flex justify-center perspective-1000">
